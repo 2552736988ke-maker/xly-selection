@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新立盈 · 减速机选型</title>
+  <link rel="stylesheet" href="./selection.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">XLY</span>
+      <span class="brand-cn">新立盈</span>
+    </div>
+    <div class="title">减速机选型</div>
+    <nav class="tabs">
+      <a href="./index.html">旋转平台</a>
+      <a href="./gearbox.html" class="active">齿轮副 / 链带</a>
+    </nav>
+  </header>
+
+  <main>
+    <form id="form" class="form" autocomplete="off">
+      <section class="panel">
+        <h2>一、工况类型</h2>
+        <div class="row">
+          <label><input type="radio" name="dutyType" value="gear-pair" checked> 大小齿轮（齿轮副，转盘 + 齿轮）</label>
+          <label><input type="radio" name="dutyType" value="chain-belt"> 齿轮链带（水平 / 提升 / 斜坡）</label>
+        </div>
+      </section>
+
+      <section class="panel" data-duty="gear-pair">
+        <h2>二、大小齿轮（转盘 + 齿轮副）</h2>
+        <table class="form-table">
+          <tr><th>转盘质量 m1</th><td><input type="number" name="turntableMass_kg" value="500" step="any" min="0" class="num"> kg</td></tr>
+          <tr><th>转盘直径 D</th><td><input type="number" name="turntableDiameter_mm" value="1000" step="any" min="0" class="num"> mm</td></tr>
+          <tr><th>转盘形状</th><td>
+            <select name="turntableShape">
+              <option value="disc" selected>圆盘（用直径）</option>
+              <option value="box">方体（用 a × b）</option>
+            </select>
+          </td></tr>
+          <tr data-shape="box"><th>转盘截面 a × b</th><td>
+            <input type="number" name="turntableSideA_mm" value="0" step="any" min="0" class="num"> ×
+            <input type="number" name="turntableSideB_mm" value="0" step="any" min="0" class="num"> mm
+          </td></tr>
+          <tr><th>转盘偏心 L1</th><td><input type="number" name="eccentricity_mm" value="0" step="any" min="0" class="num"> mm</td></tr>
+          <tr><th>安装方向</th><td>
+            <label><input type="radio" name="mounting" value="horizontal" checked> 平装</label>
+            <label><input type="radio" name="mounting" value="hanging"> 吊装</label>
+            <label><input type="radio" name="mounting" value="side"> 侧装</label>
+            <span class="dim">只有侧装才计入偏心力矩 T2 = m1·g·L1</span>
+          </td></tr>
+          <tr><th>工位数量 / 单工位质量</th><td>
+            <input type="number" name="stations.count" value="0" step="1" min="0" class="num"> 个 ×
+            <input type="number" name="stations.massEach_kg" value="0" step="any" min="0" class="num"> kg
+          </td></tr>
+          <tr><th>工位负载长 × 宽</th><td>
+            <input type="number" name="stations.sideC_mm" value="0" step="any" min="0" class="num"> ×
+            <input type="number" name="stations.sideD_mm" value="0" step="any" min="0" class="num"> mm
+          </td></tr>
+          <tr><th>负载偏心 L2</th><td><input type="number" name="loadOffset_mm" value="0" step="any" min="0" class="num"> mm</td></tr>
+          <tr><th>大齿轮 质量 / 外径 / 内径</th><td>
+            <input type="number" name="bigGear.mass_kg" value="100" step="any" min="0" class="num"> kg
+            <input type="number" name="bigGear.outerDiameter_mm" value="800" step="any" min="0" class="num"> mm
+            <input type="number" name="bigGear.innerDiameter_mm" value="300" step="any" min="0" class="num"> mm
+          </td></tr>
+          <tr><th>小齿轮 质量 / 外径 / 内径</th><td>
+            <input type="number" name="smallGear.mass_kg" value="0" step="any" min="0" class="num"> kg
+            <input type="number" name="smallGear.outerDiameter_mm" value="0" step="any" min="0" class="num"> mm
+            <input type="number" name="smallGear.innerDiameter_mm" value="0" step="any" min="0" class="num"> mm
+          </td></tr>
+          <tr><th>减速机惯量 J减速机</th><td>
+            <input type="number" name="gearboxInertia_kgm2" value="0" step="any" min="0" class="num"> kg·m²
+            <span class="dim">按所选减速机的资料填；查不到就填 0（与 Excel 表同一格）</span>
+          </td></tr>
+          <tr><th>齿数 z1 / z2</th><td>
+            <input type="number" name="bigGearTeeth" value="120" step="1" min="1" class="num"> /
+            <input type="number" name="smallGearTeeth" value="40" step="1" min="1" class="num">
+            <span class="dim" id="gearPairRatio">i1 = 3</span>
+          </td></tr>
+          <tr><th>一次旋转角度 θ</th><td><input type="number" name="theta_deg" value="180" step="any" min="0" class="num"> °</td></tr>
+          <tr><th>旋转一次用时 t</th><td><input type="number" name="cycleTime_s" value="3" step="any" min="0" class="num"> s</td></tr>
+          <tr><th>加速时间 t1</th><td><input type="number" name="accelTime_s" value="0.5" step="any" min="0" class="num"> s</td></tr>
+          <!-- 所有者 2026-10-28：减速时间单独一个框；不改就跟加速时间 t1 一样（表里 t3 = t1） -->
+          <tr><th>减速时间 t3</th><td>
+            <input type="number" name="decelTime_s" value="0.5" step="any" min="0" class="num"> s
+            <span class="dim" id="decelHint">默认跟加速时间 t1 一样</span>
+          </td></tr>
+        </table>
+      </section>
+
+      <section class="panel" data-duty="chain-belt" hidden>
+        <h2>二、齿轮链带工况</h2>
+        <table class="form-table">
+          <tr><th>子工况</th><td>
+            <select name="case">
+              <option value="horizontal" selected>水平移动</option>
+              <option value="vertical">垂直提升</option>
+              <option value="ramp">斜坡</option>
+            </select>
+          </td></tr>
+          <tr><th>负载 m1 / 配重 m2</th><td>
+            <input type="number" name="loadMass_kg" value="250" step="any" min="0" class="num"> kg /
+            <input type="number" name="counterweight_kg" value="0" step="any" min="0" class="num"> kg
+          </td></tr>
+          <tr><th>节圆直径 D</th><td><input type="number" name="pitchDiameter_mm" value="50.93" step="any" min="0" class="num"> mm</td></tr>
+          <tr><th>移动速度 v</th><td><input type="number" name="lineSpeed_mm_s" value="600" step="any" min="0" class="num"> mm/s</td></tr>
+          <tr><th>加减速时间 t1</th><td><input type="number" name="chainAccelTime_s" value="0.5" step="any" min="0" class="num"> s
+            <span class="dim">表里加速、减速共用一个时间</span></td></tr>
+          <tr data-case="ramp"><th>坡度角 A</th><td><input type="number" name="slopeAngle_deg" value="0" step="any" min="0" class="num"> °</td></tr>
+          <tr><th>摩擦系数 μ</th><td><input type="number" name="frictionCoefficient" value="0.2" step="any" min="0" class="num"></td></tr>
+          <tr><th>被动轮 / 主动轮直径</th><td>
+            <input type="number" name="drivenPulley_mm" value="1" step="any" min="0" class="num"> /
+            <input type="number" name="drivingPulley_mm" value="1" step="any" min="0" class="num">
+            <span class="dim" id="chainRatio">i1 = 1</span>
+          </td></tr>
+          <tr><th>驱动电机数</th><td><input type="number" name="motorCount" value="2" step="1" min="1" class="num"> 台
+            <span class="dim">惯量与扭矩按台数分摊</span></td></tr>
+        </table>
+      </section>
+
+      <section class="panel">
+        <h2>三、选型参数</h2>
+        <table class="form-table">
+          <tr><th>产品系列</th><td>
+            <select name="series" id="series"></select>
+            <span class="dim">只在这一个系列里选（系列与框号不混排）</span>
+          </td></tr>
+          <!-- 所有者 2026-10-29：直角输出 = 行星减速机后面加 XZTF 换向器（换输出方向） -->
+          <tr><th>输出方向</th><td>
+            <select name="outputDirection" id="outputDirection">
+              <option value="inline">直出（减速机输出轴直连）</option>
+              <option value="rightAngle">直角（加 XZTF 换向器，输出转 90°）</option>
+            </select>
+            <span class="dim" id="outputDirectionHint">直角：行星后面加 XZTF 换向器，本体比号 1 / 2，总速比 = 本体比号 × 行星比号</span>
+          </td></tr>
+          <tr data-right-angle hidden><th>换向器本体</th><td>
+            <select name="rightAngleBodyRatio" id="rightAngleBodyRatio">
+              <option value="">自动（够用就好）</option>
+              <option value="1">只用 1:1 本体</option>
+              <option value="2">只用 2:1 本体（090–240 框号）</option>
+            </select>
+            <span class="dim">2:1 让行星比号与扭矩减半；065 / 075 / 280 只有 1:1</span>
+          </td></tr>
+          <tr><th>减速机速比 i2</th><td>
+            <select name="ratio" id="ratio"></select>
+            <span class="dim" id="ratioHint"></span>
+          </td></tr>
+          <tr><th>电机额定转速</th><td><input type="number" name="motorRatedSpeed_rpm" value="3000" step="any" min="1" class="num"> r/min</td></tr>
+          <tr><th>惯量比</th><td><input type="number" name="inertiaRatio" value="10" step="any" min="0.1" class="num">
+            <span class="dim">常用 5 / 10 / 20</span></td></tr>
+          <tr><th>安全系数 k</th><td><input type="number" name="safetyFactor" value="1.5" step="0.05" min="1" class="num"></td></tr>
+          <tr data-duty="gear-pair"><th>齿轮组效率 η1</th><td><input type="number" name="gearEfficiency" value="0.85" step="0.01" min="0.01" max="1" class="num"></td></tr>
+          <tr data-duty="chain-belt" hidden><th>输送效率 η1</th><td><input type="number" name="conveyorEfficiency" value="0.9" step="0.01" min="0.01" max="1" class="num"></td></tr>
+          <tr><th>减速机效率 η2</th><td><input type="number" name="gearboxEfficiency" value="0.9" step="0.01" min="0.01" max="1" class="num"></td></tr>
+          <tr><th>电机系列</th><td>
+            <label><input type="checkbox" name="seriesLabel" value="汇川-R" checked> 汇川-R</label>
+            <label><input type="checkbox" name="seriesLabel" value="汇川-Z"> 汇川-Z</label>
+            <label><input type="checkbox" name="seriesLabel" value="欧姆龙-1S"> 欧姆龙</label>
+          </td></tr>
+          <tr><th>电机形式</th><td>
+            <label><input type="checkbox" name="withBrake"> 带抱闸</label>
+            <label><input type="checkbox" name="highInertia"> 高惯量（1500 r/min）</label>
+          </td></tr>
+        </table>
+
+        <div class="actions">
+          <button type="submit" class="primary">开始选型</button>
+          <button type="button" id="example">示例</button>
+          <label class="dim"><input type="checkbox" id="debug"> 显示中间过程</label>
+          <span id="status" class="status"></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>四、报告附件（选填）</h2>
+        <table class="form-table">
+          <tr><th>工况图 / 现场照片</th><td>
+            <label class="file-btn">选择图片<input type="file" id="reportImages" accept="image/*" multiple hidden></label>
+            <span class="dim" id="attachmentHint">最多 4 张（自动压缩），附在报告「工况图」页</span>
+            <div class="thumbs" id="attachmentPreview"></div>
+          </td></tr>
+          <tr><th>备注</th><td>
+            <textarea id="reportRemarks" rows="2" maxlength="500" class="remark" placeholder="选填：现场条件、安装限制、交期要求等"></textarea>
+            <span class="dim">会印在报告的「备注」一节</span>
+          </td></tr>
+        </table>
+      </section>
+    </form>
+
+    <section class="panel result" id="result">
+      <div class="placeholder" id="placeholder">填写工况参数后点「开始选型」。</div>
+      <div id="output" hidden></div>
+      <div id="steps" hidden></div>
+      <div class="report-actions" id="reportActions" hidden>
+        <button type="button" data-variant="customer">下载客户版报告</button>
+        <button type="button" data-variant="internal">下载内部工程版</button>
+        <!-- 静态版没有后端：换成打印，别让客户点一个会 404 的下载按钮 -->
+        <button type="button" id="printReport" hidden>打印 / 另存为 PDF</button>
+        <!-- 所有者 2026-10-28：报告默认带公司 logo + 水印，勾掉就不带 -->
+        <label class="watermark-toggle">
+          <input type="checkbox" id="withWatermark" checked>
+          <span>报告带公司水印</span>
+        </label>
+        <span class="hint" id="reportHint"></span>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./lib/engine.js"></script>
+  <script type="module" src="./gearbox.js"></script>
+</body>
+</html>

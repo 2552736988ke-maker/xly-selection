@@ -1,0 +1,285 @@
+/* 选型页样式：照公司《选型分类.xlsx》那种"表格式参数表 + 绿色表头"的观感。
+   不引外部字体与框架，离线也能用（平台本身就在没有外网的车间里跑）。 */
+
+:root {
+  --green: #3f6b2e;
+  --green-dark: #2f5222;
+  --green-light: #eef3e8;
+  --line: #cfd8c8;
+  --ink: #1f2a1c;
+  --dim: #6b7a62;
+  --warn: #b3541e;
+  --bad: #b02a2a;
+  --paper: #fbfcf8;
+}
+
+* { box-sizing: border-box; }
+
+/* hidden 属性必须真的藏住。
+   .report-actions 这类元素自己带 display:flex，作者样式优先级高于浏览器默认的
+   [hidden] { display: none }，所以只写 el.hidden = true 在页面上"藏不住"
+   （2026-10-28 抓到：静态版那排下载按钮一直显示，点了必然 404）。 */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: #f2f4ee;
+  color: var(--ink);
+  font: 14px/1.55 "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif;
+}
+
+.topbar {
+  background: var(--green);
+  color: #fff;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand .logo {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1.5px solid rgba(255, 255, 255, .9);
+  border-radius: 3px;
+  font: 700 15px/1.35 "Segoe UI", Arial, sans-serif;
+  letter-spacing: 1px;
+}
+.brand .brand-cn { font-size: 15px; letter-spacing: 2px; }
+.topbar .title {
+  font-size: 16px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(255, 255, 255, .45);
+}
+
+main {
+  display: grid;
+  grid-template-columns: minmax(420px, 520px) minmax(520px, 1fr);
+  gap: 14px;
+  padding: 14px 18px 24px;
+  align-items: start;
+}
+@media (max-width: 1100px) {
+  main { grid-template-columns: 1fr; }
+}
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 10px 12px 12px;
+}
+
+h2 {
+  font-size: 14px;
+  margin: 12px 0 8px;
+  padding: 5px 8px;
+  color: #fff;
+  background: var(--green);
+  border-radius: 2px;
+}
+h2:first-child { margin-top: 2px; }
+h2 .h2-note { font-weight: 400; font-size: 12px; color: rgba(255, 255, 255, .8); margin-left: 6px; }
+
+.form-table { width: 100%; border-collapse: collapse; }
+.form-table th {
+  width: 120px;
+  text-align: left;
+  font-weight: 400;
+  color: #33402c;
+  background: var(--green-light);
+  border: 1px solid var(--line);
+  padding: 5px 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.form-table td {
+  border: 1px solid var(--line);
+  padding: 5px 8px;
+  background: #fff;
+}
+.form-table label { margin-right: 12px; white-space: nowrap; }
+
+input[type="number"], select {
+  border: 1px solid #b9c4b0;
+  border-radius: 2px;
+  padding: 3px 5px;
+  font: inherit;
+  color: inherit;
+  background: #fff;
+}
+input[type="number"] { text-align: right; }
+input.num { width: 86px; }
+input[type="number"]:focus, select:focus { outline: 2px solid #a9c48f; outline-offset: 0; }
+
+.unit { color: var(--dim); margin-left: 2px; }
+.dim { color: var(--dim); font-size: 12px; }
+
+.actions { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+button {
+  font: inherit;
+  padding: 5px 14px;
+  border: 1px solid #b9c4b0;
+  background: #f4f6f1;
+  border-radius: 3px;
+  cursor: pointer;
+}
+button.primary { background: var(--green); border-color: var(--green-dark); color: #fff; }
+button.primary:hover { background: var(--green-dark); }
+.status { color: var(--dim); font-size: 12px; }
+.status.bad { color: var(--bad); }
+
+.placeholder { color: var(--dim); padding: 22px 6px; }
+
+/* ---- results ---- */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+.metric {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--green);
+  background: #fff;
+  padding: 6px 9px;
+}
+.metric .k { font-size: 12px; color: var(--dim); }
+.metric .v { font-size: 17px; font-variant-numeric: tabular-nums; }
+.metric .u { font-size: 12px; color: var(--dim); }
+
+.verdict {
+  border: 1px solid var(--line);
+  background: #fff;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.verdict .title { font-size: 15px; font-weight: 600; color: var(--green-dark); }
+.verdict .line { margin-top: 4px; }
+.verdict .sub { color: var(--dim); font-size: 12px; }
+.verdict.none { border-left: 4px solid var(--bad); }
+.verdict.none .title { color: var(--bad); }
+
+table.grid { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 13px; }
+table.grid th, table.grid td { border: 1px solid var(--line); padding: 4px 6px; text-align: right; }
+table.grid th { background: var(--green-light); font-weight: 400; text-align: center; white-space: nowrap; }
+table.grid td.model, table.grid th.model { text-align: left; }
+table.grid td.model { font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.grid tr.chosen td {
+  background: #e6f1d8;
+  border-top: 1px solid #7ba25c;
+  border-bottom: 1px solid #7ba25c;
+}
+table.grid tr.chosen td:first-child { border-left: 3px solid var(--green); font-weight: 600; }
+table.grid td.bad { color: var(--bad); }
+table.grid td.good { color: #2f6b23; }
+
+details { margin: 8px 0; }
+summary { cursor: pointer; color: var(--green-dark); font-size: 13px; }
+details ul { margin: 6px 0 0; padding-left: 20px; color: #46543d; font-size: 13px; }
+
+.note { color: var(--warn); font-size: 13px; margin: 6px 0; }
+.foot { color: var(--dim); font-size: 12px; padding: 0 18px 18px; }
+
+/* ---- reports ---- */
+
+.report-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0 2px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+.report-actions button { background: #fff; }
+.report-actions button:hover { background: var(--green-light); }
+.report-actions .hint { color: var(--dim); font-size: 12px; }
+
+/* 报告水印勾选框（所有者 2026-10-28）：和报告按钮同一排，默认勾上 */
+.watermark-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #46543d; cursor: pointer; user-select: none; }
+.watermark-toggle input { width: 15px; height: 15px; margin: 0; accent-color: var(--green); cursor: pointer; }
+
+#debug { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 8px; }
+#debug h3 { font-size: 13px; color: var(--dim); font-weight: 400; margin: 6px 0; }
+#debug ul { font-size: 12.5px; color: #46543d; }
+
+/* ---- 减速机选型页（/gearbox.html）---- */
+
+.tabs { margin-left: auto; display: flex; gap: 14px; }
+.tabs a {
+  color: rgba(255, 255, 255, .82);
+  text-decoration: none;
+  font-size: 13px;
+  padding-bottom: 2px;
+}
+.tabs a.active { color: #fff; border-bottom: 2px solid #fff; }
+.tabs a:hover { color: #fff; }
+
+form .panel { margin-bottom: 12px; }
+.row { display: flex; gap: 20px; flex-wrap: wrap; padding: 4px 2px; }
+.badge {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: var(--green-light);
+  border: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--green-dark);
+}
+.badge.warn { background: #fdf1e6; border-color: #e7c9ad; color: var(--warn); }
+
+/* 报告附件（2026-10-28）：上传按钮、缩略图、备注框 */
+.file-btn {
+  display: inline-block; padding: 4px 12px; border: 1px solid var(--green);
+  border-radius: 4px; color: var(--green-dark); background: #fff; cursor: pointer; font-size: 13px;
+}
+.file-btn:hover { background: var(--green-light); }
+.thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.thumbs figure { position: relative; margin: 0; }
+.thumbs img { height: 72px; border: 1px solid var(--line); border-radius: 4px; display: block; }
+.thumbs button {
+  position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; padding: 0;
+  border-radius: 9px; border: 1px solid var(--line); background: #fff; color: var(--bad);
+  cursor: pointer; font-size: 12px; line-height: 1;
+}
+textarea.remark {
+  width: 100%; max-width: 520px; font: inherit; font-size: 13px;
+  border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; resize: vertical;
+}
+
+/* 打印（静态版的"另存为 PDF"）：只印结果，不印表单、按钮和状态行。
+   打印对话框里把目标选成"另存为 PDF"即可。 */
+.print-only { display: none; }
+/* 打印专用的两块，屏幕上一律不显示：
+   · #printExtras：附图 / 备注 / 水印图（2026-10-29：减速机页把它拼到了 .print-only 外面，
+     一张 1200 px 的水印图直接盖住输入界面——水印只属于纸上的报告，屏幕上要干净）；
+   · .print-watermark：水印图本身。 */
+#printExtras, .print-watermark { display: none; }
+@media print {
+  @page { size: A4; margin: 12mm; }
+  body { background: #fff; font-size: 12px; }
+  .topbar, .panel.form, form .panel, .report-actions, #status, #placeholder { display: none !important; }
+  main { display: block; padding: 0; }
+  .panel.result { border: 0; border-radius: 0; padding: 0; background: #fff; }
+  .grid { page-break-inside: auto; }
+  .grid tr { page-break-inside: avoid; }
+  .summary, .verdict { page-break-inside: avoid; }
+  .summary { grid-template-columns: repeat(3, 1fr); }
+  /* 打印头：表单藏起来了，纸上至少要有标题、日期和这一单的输入参数 */
+  .print-only { display: block; }
+  .print-only h1 { font-size: 17px; margin: 0 0 2px; color: var(--green-dark); }
+  .print-only .print-meta { font-size: 12px; color: var(--dim); margin-bottom: 2px; }
+  .print-only .print-params { font-size: 12px; margin: 0 0 10px; }
+  /* 工况图单独占一页：打印头之后、工况数据之前（所有者 2026-10-28） */
+  .print-only .print-images { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 0; page-break-after: always; }
+  .print-only .print-images img { max-height: 150px; max-width: 240px; border: 1px solid var(--line); }
+  .print-only .print-heading { font-weight: 600; font-size: 13px; margin: 8px 0 2px; }
+  .print-only .print-remarks { font-size: 12px; margin-top: 8px; page-break-inside: avoid; }
+  .print-only .print-remarks b { display: block; margin-bottom: 2px; }
+  /* 水印：固定定位的 <img>（Chrome 打印时每页重复；背景图默认不印）。所有者 2026-10-28 */
+  #printExtras { display: block; }
+  .print-watermark { display: block; position: fixed; top: 50%; left: 50%; width: 46%; transform: translate(-50%, -50%); z-index: 9999; pointer-events: none; }
+}

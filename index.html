@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新立盈 · 减速机选型</title>
+  <link rel="stylesheet" href="./selection.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">XLY</span>
+      <span class="brand-cn">新立盈</span>
+    </div>
+    <div class="title">减速机选型</div>
+    <nav class="tabs">
+      <a href="./index.html" class="active">旋转平台</a>
+      <a href="./gearbox.html">齿轮副 / 链带</a>
+    </nav>
+  </header>
+
+  <main>
+    <form id="form" class="panel form" autocomplete="off">
+      <h2>一、安装与负载</h2>
+      <table class="form-table">
+        <tr>
+          <th>产品系列</th>
+          <td>
+            <!-- 所有者 2026-10-26 晚：「全部系列选项不要了吧，容易增加不少问题，而且实际选肯定是能确定型号的」
+                 ——所以这里没有"全部系列"，必须点明是哪一个系列；平台与换向器不混排。 -->
+            <select name="productSeries">
+              <option value="MTN">MTN 系列</option>
+              <option value="ZTT">ZTT 系列</option>
+              <option value="XZT">XZT 系列</option>
+              <option value="XZTF">XZTF 系列</option>
+            </select>
+            <span class="dim">选哪个系列就只出哪个系列的型号（平台与换向器不混排）</span>
+          </td>
+        </tr>
+        <!-- 输出型式只在换向器上出现（所有者 2026-10-26：不是禁用，是直接不显示）。
+             平台（MTN/ZTT/MTT）与「全部系列」都不显示这一行，只在 XZT / XZTF 时显示。
+             代号按系列现给：XZTF 用 FL/FC/FH，XZT 用 L/C/H（两套一一对应）。
+             换了形态 = 换订货代号与法兰尺寸，扭矩/惯量一条都不变。 -->
+        <tr data-series="XZT XZTF">
+          <th>输出型式</th>
+          <td>
+            <select name="outputType">
+              <option value="clamp-double" selected>胀紧套孔输出（双）FC / C</option>
+              <option value="clamp-left">胀紧套孔输出（左）FCL / CL</option>
+              <option value="clamp-right">胀紧套孔输出（右）FCR / CR</option>
+              <option value="shaft-double">轴输出（双）FL / L</option>
+              <option value="shaft-left">轴输出（左）FL1 / L1</option>
+              <option value="shaft-right">轴输出（右）FR1 / R1</option>
+              <option value="hole">孔输出（单孔）FH / H</option>
+            </select>
+            <span class="dim">默认 FC；只影响订货代号与法兰尺寸，不影响计算</span>
+          </td>
+        </tr>
+        <tr>
+          <th>安装方向</th>
+          <td>
+            <label><input type="radio" name="mounting" value="horizontal" checked> 平装</label>
+            <label><input type="radio" name="mounting" value="hanging"> 吊装</label>
+            <label><input type="radio" name="mounting" value="side"> 侧装</label>
+          </td>
+        </tr>
+        <tr>
+          <th>负载形状</th>
+          <td>
+            <select name="shape">
+              <option value="box">方体 a×b</option>
+              <option value="disc">圆盘 D</option>
+              <option value="cylinder-perpendicular">圆柱体（长 ⊥ 轴）</option>
+              <option value="cylinder-parallel">圆柱体（长 ∥ 轴）</option>
+            </select>
+          </td>
+        </tr>
+        <tr data-shape="box">
+          <th>方体尺寸</th>
+          <td>
+            <input type="number" name="sideA_mm" value="500" step="any" min="0" class="num"> ×
+            <input type="number" name="sideB_mm" value="500" step="any" min="0" class="num"> <span class="unit">mm</span>
+          </td>
+        </tr>
+        <tr data-shape="disc">
+          <th>圆盘直径</th>
+          <td><input type="number" name="diameter_mm" value="300" step="any" min="0" class="num"> <span class="unit">mm</span></td>
+        </tr>
+        <tr data-shape="cylinder-perpendicular cylinder-parallel">
+          <th>圆柱体型面</th>
+          <td>
+            外径 <input type="number" name="outerDiameter_mm" value="200" step="any" min="0" class="num"> <span class="unit">mm</span>
+            内径 <input type="number" name="innerDiameter_mm" value="0" step="any" min="0" class="num"> <span class="unit">mm</span>
+            <span data-shape="cylinder-perpendicular">长度 <input type="number" name="length_mm" value="1000" step="any" min="0" class="num"> <span class="unit">mm</span></span>
+          </td>
+        </tr>
+        <tr>
+          <th>偏心距 G</th>
+          <td><input type="number" name="eccentricity_mm" value="0" step="any" min="0" class="num"> <span class="unit">mm</span></td>
+        </tr>
+        <tr>
+          <th>负载质量 M</th>
+          <td><input type="number" name="mass_kg" value="15" step="any" min="0" class="num"> <span class="unit">kg</span></td>
+        </tr>
+      </table>
+
+      <h2>二、工况</h2>
+      <table class="form-table">
+        <tr>
+          <th>工况类型</th>
+          <td>
+            <label><input type="radio" name="mode" value="intermittent" checked> 间歇</label>
+            <label><input type="radio" name="mode" value="continuous"> 连续</label>
+          </td>
+        </tr>
+        <tr data-mode="intermittent">
+          <th>一次转多少度 θ</th>
+          <td><input type="number" name="theta_deg" value="180" step="any" min="0" class="num"> <span class="unit">°</span></td>
+        </tr>
+        <tr data-mode="intermittent">
+          <th>转动一次用时 T</th>
+          <td><input type="number" name="cycleTime_s" value="1" step="any" min="0" class="num"> <span class="unit">s</span></td>
+        </tr>
+        <tr data-mode="intermittent">
+          <th>加速时间 t1</th>
+          <td><input type="number" name="accelTime_s" value="0.5" step="any" min="0" class="num"> <span class="unit">s</span></td>
+        </tr>
+        <tr data-mode="intermittent">
+          <!-- 所有者 2026-10-28：减速时间单独一个框。不改就跟着加速时间走；改了按改的算。 -->
+          <th>减速时间 t3</th>
+          <td>
+            <input type="number" name="decelTime_s" value="0.5" step="any" min="0" class="num"> <span class="unit">s</span>
+            <span class="dim" id="decelHint">默认跟加速时间 t1 一样</span>
+          </td>
+        </tr>
+        <tr data-mode="continuous">
+          <th>输出转速 N</th>
+          <td><input type="number" name="outputSpeed_rpm" value="60" step="any" min="0" class="num"> <span class="unit">r/min</span></td>
+        </tr>
+        <tr data-mode="continuous">
+          <th>负载转矩</th>
+          <td><input type="number" name="loadTorque_Nm" value="20" step="any" min="0" class="num"> <span class="unit">N·m</span></td>
+        </tr>
+      </table>
+
+      <h2>三、选型参数</h2>
+      <table class="form-table">
+        <tr>
+          <th>速比 i</th>
+          <td>
+            <input type="number" name="ratio" value="30" step="any" min="0" class="num">
+            <span class="unit">: 1</span>
+            <span class="dim" id="maxRatioHint"></span>
+          </td>
+        </tr>
+        <tr>
+          <th>安全系数 KA</th>
+          <td><input type="number" name="safetyFactor" value="1.5" step="0.05" min="1" class="num"></td>
+        </tr>
+        <tr>
+          <th>惯量比</th>
+          <td>
+            <input type="number" name="inertiaRatio" value="10" step="any" min="0.1" class="num">
+            <span class="dim">常用 5 / 10 / 20</span>
+          </td>
+        </tr>
+        <tr>
+          <th>本体效率</th>
+          <td><input type="number" name="bodyEfficiency" value="0.85" step="0.01" min="0.01" max="1" class="num"></td>
+        </tr>
+        <tr>
+          <th>减速机效率</th>
+          <td><input type="number" name="gearboxEfficiency" value="0.9" step="0.01" min="0.01" max="1" class="num"></td>
+        </tr>
+        <tr>
+          <th>电机额定转速</th>
+          <td><input type="number" name="motorRatedSpeed_rpm" value="3000" step="any" min="1" class="num"> <span class="unit">r/min</span></td>
+        </tr>
+        <tr>
+          <th>电机系列</th>
+          <td>
+            <label><input type="checkbox" name="series" value="汇川-R" checked> 汇川-R</label>
+            <label><input type="checkbox" name="series" value="汇川-Z"> 汇川-Z</label>
+            <label><input type="checkbox" name="series" value="欧姆龙-1S"> 欧姆龙</label>
+          </td>
+        </tr>
+        <tr>
+          <th>电机形式</th>
+          <td>
+            <label><input type="checkbox" name="withBrake"> 带抱闸<span class="dim">（按抱闸惯量）</span></label>
+            <label><input type="checkbox" name="highInertia"> 高惯量<span class="dim">（1500 r/min）</span></label>
+          </td>
+        </tr>
+        <tr>
+          <th>数据</th>
+          <td><label><input type="checkbox" name="includeDrafts" checked> 含草稿数据</label></td>
+        </tr>
+      </table>
+
+      <h2>四、报告附件（选填）</h2>
+      <table class="form-table">
+        <tr>
+          <th>工况图 / 现场照片</th>
+          <td>
+            <label class="file-btn">选择图片<input type="file" id="reportImages" accept="image/*" multiple hidden></label>
+            <span class="dim" id="attachmentHint">最多 4 张（自动压缩），附在报告「工况图」页</span>
+            <div class="thumbs" id="attachmentPreview"></div>
+          </td>
+        </tr>
+        <tr>
+          <th>备注</th>
+          <td>
+            <textarea id="reportRemarks" rows="2" maxlength="500" class="remark" placeholder="选填：现场条件、安装限制、交期要求等"></textarea>
+            <span class="dim">会印在报告的「备注」一节</span>
+          </td>
+        </tr>
+      </table>
+
+      <div class="actions">
+        <button type="submit" class="primary">开始选型</button>
+        <button type="button" id="example">示例</button>
+        <span id="status" class="status"></span>
+      </div>
+    </form>
+
+    <section class="panel result" id="result">
+      <div class="placeholder" id="placeholder">请填写工况参数后点击「开始选型」。</div>
+      <div id="output" hidden></div>
+      <div id="debug" hidden></div>
+    </section>
+  </main>
+
+  <script type="module" src="./lib/engine.js"></script>
+  <script type="module" src="./selection.js"></script>
+</body>
+</html>
